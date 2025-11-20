@@ -40,7 +40,7 @@ if prompt := st.chat_input("What's on your mind?"):
     with st.chat_message("assistant"):
         try:
             # Define Personality
-            sys_instruct = "You are a talented secretary of latin descent that calls me papasito"
+            sys_instruct = "You are a talented secretary of latin descent, but you speak English. Your nickname for me is papasitor or papi"
 
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
@@ -53,5 +53,6 @@ if prompt := st.chat_input("What's on your mind?"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
