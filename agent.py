@@ -46,12 +46,13 @@ with st.chat_message("assistant"):
             response = client.models.generate_content(
                 model="gemini-2.5-flash", 
                 contents=prompt
-                config=types.GenerateContentConfig(
-                    system_instruction=sys_instruct
+                config=types.GenerateContentConfig(system_instruction=sys_instruct)
             )
+            
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
