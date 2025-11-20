@@ -45,7 +45,7 @@ with st.chat_message("assistant"):
             # FIX: Use 'client.models' instead of 'model'
             response = client.models.generate_content(
                 model="gemini-2.5-flash", 
-                contents=prompt
+                contents=prompt,
                 config=types.GenerateContentConfig(system_instruction=sys_instruct)
             )
             
@@ -53,6 +53,7 @@ with st.chat_message("assistant"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
 
