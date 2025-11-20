@@ -1,13 +1,13 @@
 import streamlit as st
-from google import genai as genai
+from google import genai
 
-# 1. Configure the "Brain"
-# (Ideally, store this in secrets, but for now you can paste it or use st.secrets)
-client = genai.Client(api_key="")
-
-response = client.models.generate_content(
-    model="gemini-2.5-flash", contents="Explain how AI works in a few words"
-)
+# 1. Configure the Client (The "Brain")
+# This reads from your .streamlit/secrets.toml file
+try:
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+except Exception:
+    st.error("⚠️ API Key not found. Please add it to your secrets.toml file.")
+    st.stop()
 
 # 2. Title and Setup
 st.title("🤖 My Personal Agent")
@@ -28,7 +28,13 @@ if prompt := st.chat_input("What's on your mind?"):
 
     # Generate and display AI response
     with st.chat_message("assistant"):
-        response = model.generate_content(prompt)
-        st.markdown(response.text)
-
-    st.session_state.messages.append({"role": "assistant", "content": response.text})
+        try:
+            # FIX: Use 'client.models' instead of 'model'
+            response = client.models.generate_content(
+                model="gemini-2.5-flash", 
+                contents=prompt
+            )
+            st.markdown(response.text)
+            st.session_state.messages.append({"role": "assistant", "content": response.text})
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
