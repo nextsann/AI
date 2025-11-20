@@ -38,16 +38,20 @@ if prompt := st.chat_input("What's on your mind?"):
         })
 
     # C. Generate Reply
-    with st.chat_message("assistant"):
+with st.chat_message("assistant"):
         try:
-            # FIXED: We use 'client.models', not 'model'
-            # FIXED: We use 'gemini-1.5-flash' (2.5 is not out yet!)
+
+            sys_instruct = "You are a grumpy medieval innkeeper. You answer questions reluctantly and use old english slang."
+            # FIX: Use 'client.models' instead of 'model'
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=gemini_history
+                model="gemini-2.5-flash", 
+                contents=prompt
+                config=types.GenerateContentConfig(
+                    system_instruction=sys_instruct
             )
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
