@@ -1,61 +1,55 @@
 import streamlit as st
 from google import genai
-from google.genai import types
+from google.genai import types  # <--- 1. IMPORT TYPES
 
-# 1. Configure the Client (The "Brain")
+# 2. Configure the Client
 try:
-    # If this fails, make sure you have a .streamlit/secrets.toml file
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 except Exception:
     st.error("⚠️ API Key not found. Please add it to your secrets.toml file.")
     st.stop()
 
-# 2. Setup the Page
 st.title("🤖 My Personal Agent")
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# 3. Display Old Chat History
+# 3. Display History
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 # 4. Handle New Input
 if prompt := st.chat_input("What's on your mind?"):
-    # A. Show User Message
     with st.chat_message("user"):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # B. Build Memory (The "Context")
-    # We convert Streamlit's history to the format Google expects
+    # --- MEMORY BUILDER (FIXED FOR NEW SDK) ---
     gemini_history = []
     for msg in st.session_state.messages:
-        # Google uses "model" instead of "assistant"
+        # Convert role names
         role = "model" if msg["role"] == "assistant" else "user"
-        gemini_history.append({
-            "role": role,
-            "parts": [{"text": msg["content"]}]
-        })
+        
+        # Create the strict objects the new SDK demands
+        part = types.Part(text=msg["content"])
+        content = types.Content(role=role, parts=[part])
+        gemini_history.append(content)
+    # ------------------------------------------
 
-    # C. Generate Reply
-with st.chat_message("assistant"):
+    with st.chat_message("assistant"):
         try:
+            # Define Personality
+            sys_instruct = "You are a helpful, slightly sarcastic personal assistant."
 
-            sys_instruct = "You are a grumpy medieval innkeeper. You answer questions reluctantly and use old english slang."
-            # FIX: Use 'client.models' instead of 'model'
             response = client.models.generate_content(
-                model="gemini-2.5-flash", 
-                contents=prompt,
-                config=types.GenerateContentConfig(system_instruction=sys_instruct)
+                model="gemini-2.5-flash",
+                contents=gemini_history,  # Now contains valid types.Content objects
+                config=types.GenerateContentConfig(
+                    system_instruction=sys_instruct
+                )
             )
-            
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
-
-
-
-
-
