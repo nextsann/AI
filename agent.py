@@ -26,6 +26,14 @@ if prompt := st.chat_input("What's on your mind?"):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
+gemini_history = []
+    for msg in st.session_state.messages:
+        role = "model" if msg["role"] == "assistant" else "user"
+        gemini_history.append({
+            "role": role,
+            "parts": [{"text": msg["content"]}]
+        })
+
     # Generate and display AI response
     with st.chat_message("assistant"):
         try:
@@ -38,3 +46,4 @@ if prompt := st.chat_input("What's on your mind?"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
