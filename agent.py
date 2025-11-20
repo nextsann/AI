@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types
 
 # 1. Configure the Client (The "Brain")
 try:
@@ -53,6 +54,7 @@ with st.chat_message("assistant"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
 
