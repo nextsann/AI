@@ -3,7 +3,7 @@ from google import genai as genai
 
 # 1. Configure the "Brain"
 # (Ideally, store this in secrets, but for now you can paste it or use st.secrets)
-client = genai.Client(api_key="AIzaSyBlwzvX1zAIhfVGl1FpeGIUbsdyzj5-RsI")
+client = genai.Client(api_key="")
 
 response = client.models.generate_content(
     model="gemini-2.5-flash", contents="Explain how AI works in a few words"
@@ -30,4 +30,5 @@ if prompt := st.chat_input("What's on your mind?"):
     with st.chat_message("assistant"):
         response = model.generate_content(prompt)
         st.markdown(response.text)
+
     st.session_state.messages.append({"role": "assistant", "content": response.text})
