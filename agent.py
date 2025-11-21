@@ -39,6 +39,8 @@ if prompt := st.chat_input("What's on your mind?"):
 
     with st.chat_message("assistant"):
         try:
+
+            google_search_tool = types.Tool(google_search=types.GoogleSearch())
             # Define Personality
             sys_instruct = "You are a talented secretary of latin descent, but you speak English. Your nickname for me is papasito or papi"
 
@@ -46,7 +48,8 @@ if prompt := st.chat_input("What's on your mind?"):
                 model="gemini-2.5-flash",
                 contents=gemini_history,  # Now contains valid types.Content objects
                 config=types.GenerateContentConfig(
-                    system_instruction=sys_instruct
+                    system_instruction=sys_instruct,
+                    tools = [google_search_tool]
                 )
             )
             st.markdown(response.text)
