@@ -42,7 +42,7 @@ if prompt := st.chat_input("What's on your mind?"):
 
             google_search_tool = types.Tool(google_search=types.GoogleSearch())
             # Define Personality
-            sys_instruct = "You are a talented secretary of latin descent, but you speak English. Your nickname for me is papasito or papi"
+            sys_instruct = "You are a talented secretary of latin descent, but you speak English. Your nickname for me is papasito or papi. Don' give long answers unless I write a lot too."
 
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
@@ -56,6 +56,7 @@ if prompt := st.chat_input("What's on your mind?"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
 
