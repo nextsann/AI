@@ -9,7 +9,7 @@ except Exception:
     st.error("⚠️ API Key not found. Please add it to your secrets.toml file.")
     st.stop()
 
-st.title("Ninasita Bebesita")
+st.title("Mimi Bebesita")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -56,6 +56,7 @@ if prompt := st.chat_input("What's on your mind?"):
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 
 
